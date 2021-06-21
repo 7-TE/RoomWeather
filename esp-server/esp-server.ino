@@ -16,6 +16,10 @@ ESP8266WebServer server(80);
 
 const int led = 13;
 
+float tempc;  //variable to store temperature in degree Celsius
+float tempf;  //variable to store temperature in Fahreinheit 
+float vout;  //temporary variable to hold sensor reading
+
 void handleRoot() {
   digitalWrite(led, 1);
   server.send(200, "text/plain", "hello from esp8266! ;)\r\n");
@@ -40,6 +44,7 @@ void handleNotFound() {
 }
 
 void setup(void) {
+  pinMode(A0, INPUT);
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
   Serial.begin(9600);
@@ -66,6 +71,24 @@ void setup(void) {
 
   server.on("/inline", []() {
     server.send(200, "text/plain", "this works as well");
+  });
+
+  server.on("/temperature", []() {
+    vout=analogRead(A0);
+    vout=(vout*500)/1024;
+    tempc=vout; // Storing value in Degree Celsius
+    tempf=(vout*1.8)+32; // Converting to Fahrenheit 
+
+    Serial.print("in DegreeC=");
+    Serial.print("\t");
+    Serial.print(tempc);
+    Serial.println();
+    Serial.print("in Fahrenheit=");
+    Serial.print("\t");
+    Serial.print(tempf);
+    Serial.println();
+
+    server.send(200, "text/plain", String(tempc));
   });
 
   server.onNotFound(handleNotFound);
