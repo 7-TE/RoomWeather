@@ -13,6 +13,10 @@ DHT dht(DHT_PIN, DHT_TYPE);
 const char* ssid = STASSID;
 const char* password = STAPSK;
 
+IPAddress local_IP(192, 168, 0, 204);
+IPAddress gateway(192, 168, 0, 1);
+IPAddress subnet(255, 255, 255, 0);
+
 ESP8266WebServer server(80);
 
 const int led = 13;
@@ -41,11 +45,17 @@ void handleNotFound() {
 }
 
 void setup(void) {
-  pinMode(A0, INPUT);
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
+
   Serial.begin(9600);
   dht.begin();
+  
+  // Configures static IP address
+  if (!WiFi.config(local_IP, gateway, subnet)) {
+    Serial.println("STA Failed to configure");
+  }
+  
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.println("");
