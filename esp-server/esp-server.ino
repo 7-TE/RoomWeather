@@ -2,12 +2,13 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
+#include <DHT.h>
 #include "arduino_secrets.h"
 
-// #ifndef STASSID
-// #define STASSID "SSID"
-// #define STAPSK  "PASSWORD"
-// #endif
+#define DHT_TYPE DHT22
+
+const int DHT_PIN = 5;
+DHT dht(DHT_PIN, DHT_TYPE);
 
 const char* ssid = STASSID;
 const char* password = STAPSK;
@@ -15,10 +16,6 @@ const char* password = STAPSK;
 ESP8266WebServer server(80);
 
 const int led = 13;
-
-float tempc;  //variable to store temperature in degree Celsius
-float tempf;  //variable to store temperature in Fahreinheit 
-float vout;  //temporary variable to hold sensor reading
 
 void handleRoot() {
   digitalWrite(led, 1);
@@ -48,6 +45,7 @@ void setup(void) {
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
   Serial.begin(9600);
+  dht.begin();
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.println("");
@@ -74,34 +72,26 @@ void setup(void) {
   });
 
   server.on("/temperature", []() {
-    vout=analogRead(A0);
-    vout=(vout*500)/1024;
-    tempc=vout; // Storing value in Degree Celsius
-    tempf=(vout*1.8)+32; // Converting to Fahrenheit 
+    float t = dht.readTemperature();
+    
+    Serial.print("Temperature: ");
+    Serial.print(t);
+    Serial.println(" Celsius");
 
-    Serial.print("in DegreeC=");
-    Serial.print("\t");
-    Serial.print(tempc);
-    Serial.println();
-    Serial.print("in Fahrenheit=");
-    Serial.print("\t");
-    Serial.print(tempf);
-    Serial.println();
+    server.send(200, "text/plain", String(t));
+  });
 
-    server.send(200, "text/plain", String(tempc));
+  server.on("/humidity", []() {
+    float h = dht.readHumidity();
+    
+    Serial.print("Humidity: ");
+    Serial.print(h);
+    Serial.println(" %");
+
+    server.send(200, "text/plain", String(h));
   });
 
   server.onNotFound(handleNotFound);
-
-  // server.addHook([](const String & method, const String & url, WiFiClient * client, ESP8266WebServer::ContentTypeFunction contentType) {
-  //   (void)method;      // GET, PUT, ...
-  //   (void)url;         // example: /root/myfile.html
-  //   (void)client;      // the webserver tcp client connection
-  //   (void)contentType; // contentType(".html") => "text/html"
-  //   Serial.printf("A useless web hook has passed\n");
-  //   Serial.printf("(this hook is in 0x%08x area (401x=IRAM 402x=FLASH))\n", esp_get_program_counter());
-  //   return ESP8266WebServer::CLIENT_REQUEST_CAN_CONTINUE;
-  // });
 
   server.begin();
   Serial.println("HTTP server started");
