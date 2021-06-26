@@ -1,0 +1,13 @@
+{
+    "clientId": "Your_developer_application_client_id_goes_here",
+    "apiBaseURL": "http://192.168.0.204",
+    "updateInterval": 300,
+    "rich_presence": {
+        "temperature": "Temperature",
+        "humidity": "Humidity",
+        "button": {
+            "buttonLabelText": "Github",
+            "buttonRedirectUrl": "https://github.com/FugiMuffi/esp-temp-discord"
+        }
+    }
+}
