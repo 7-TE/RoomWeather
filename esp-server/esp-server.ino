@@ -91,6 +91,18 @@ void setup(void) {
     server.send(200, "text/plain", String(t));
   });
 
+//  server.on("/status", []() {
+//    float t = dht.readTemperature();
+//    
+//    Serial.print("Temperature: ");
+//    Serial.print(t);
+//    Serial.println(" Celsius");
+//
+//    String json = "{\"currentTemperature\": " + String(t) +  "}";
+//
+//    server.send(200, "application/json", json);
+//  });
+
   server.on("/humidity", []() {
     float h = dht.readHumidity();
     
@@ -99,6 +111,15 @@ void setup(void) {
     Serial.println(" %");
 
     server.send(200, "text/plain", String(h));
+  });
+
+  server.on("/weather", []() {
+    float t = dht.readTemperature();
+    float h = dht.readHumidity();
+
+    String json = "{\"temperature\": " + String(t) +  ", \"humidity\": " + String(h) + "}";
+
+    server.send(200, "application/json", json);
   });
 
   server.onNotFound(handleNotFound);
