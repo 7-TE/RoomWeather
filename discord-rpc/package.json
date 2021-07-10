@@ -1,14 +1,14 @@
 {
-  "name": "simple-discord-rpc",
+  "name": "roomweather-rpc",
   "version": "1.0.0",
-  "description": "Beautify your Discord profile with a fully customizable Discord Rich Presence, now with buttons.",
+  "description": "Display your own temperature and humidity readings as Discord Rich Presence",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Jayme#0001",
-  "license": "ISC",
+  "author": "Fugi",
+  "license": "GPL-3.0-or-later",
   "dependencies": {
     "chalk": "^4.1.0",
     "discord-rpc": "^3.1.4",
