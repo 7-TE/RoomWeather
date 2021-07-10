@@ -1,3 +1,8 @@
+/**
+ * Adapted from example ESP8266WebServer/HelloServer
+ * https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266WebServer/examples/HelloServer/HelloServer.ino
+ */
+
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
@@ -77,10 +82,6 @@ void setup(void) {
 
   server.on("/", handleRoot);
 
-  server.on("/inline", []() {
-    server.send(200, "text/plain", "this works as well");
-  });
-
   server.on("/temperature", []() {
     float t = dht.readTemperature();
     
@@ -90,18 +91,6 @@ void setup(void) {
 
     server.send(200, "text/plain", String(t));
   });
-
-//  server.on("/status", []() {
-//    float t = dht.readTemperature();
-//    
-//    Serial.print("Temperature: ");
-//    Serial.print(t);
-//    Serial.println(" Celsius");
-//
-//    String json = "{\"currentTemperature\": " + String(t) +  "}";
-//
-//    server.send(200, "application/json", json);
-//  });
 
   server.on("/humidity", []() {
     float h = dht.readHumidity();
