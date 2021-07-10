@@ -25,6 +25,11 @@ yarn
 yarn start
 ```
 
+## Contributing
+
+This code is licensed under the GPL v3.0 or later.  
+Feel free to fork and PR if you want to improve it :)
+
 ## Credits
 
 `esp-server.ino` is based on the Arduino example [ESP8266WebServer/HelloServer](https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266WebServer/examples/HelloServer/HelloServer.ino).  
