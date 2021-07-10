@@ -61,9 +61,9 @@ function onStartup() {
     validateConfig();
 
     // wait 5 seconds
-    setTimeout(updatePresence, 5 * 1000);
+    setTimeout(fetchApiData, 5 * 1000);
     // periodically update presence
-    setInterval(updatePresence, config.updateInterval * 1000)
+    setInterval(fetchApiData, config.updateInterval * 1000)
 }
 
 /* Ensure the user's config meets all the requirements */
@@ -97,28 +97,17 @@ function validateConfig() {
     console.log(SUCCESS(`Configuration is valid! Attempting to update ${client.user.username}#${client.user.discriminator}'s Rich Presence...`));
 }
 
-async function fetchApiData() {
-    let reqTemperature = await fetch(config.apiBaseURL.toString() + "/temperature");
-    let reqHumidity = await fetch(config.apiBaseURL.toString() + "/humidity");
-
-    //TODO: handle errors
-
-    let result = {};
-
-    result.temperature = reqTemperature.ok ? await reqTemperature.text() : "N/A";
-    result.humidity = reqHumidity.ok ? await reqHumidity.text() : "N/A";
-
-    console.log(result);
-    return result;
-}
-
 /* Update user's Rich Presence */
 
-async function updatePresence() {
-    const data = await fetchApiData();
+async function fetchApiData() {
+    fetch(config.apiBaseURL.toString() + '/weather')
+        .then(res => res.json())
+        .then(json => updatePresence(json))
+        .catch(error => console.error(`${error.name} - ${error.message}`));
+}
 
-    console.log(INFO(`Successfully updated ${client.user.username}#${client.user.discriminator}'s Rich Presence!`));
-    return client.request('SET_ACTIVITY', {
+async function updatePresence(data) {
+    client.request('SET_ACTIVITY', {
         pid: process.pid,
         activity: {
             details: `${rpc.temperature}: ${data.temperature} °C`,
@@ -135,6 +124,8 @@ async function updatePresence() {
             instance: true
         }
     });
+
+    console.log(INFO(`Successfully updated ${client.user.username}#${client.user.discriminator}'s Rich Presence!`));
 }
 
 /* Once the client is ready, call onStartup() to execute initialTasks */
