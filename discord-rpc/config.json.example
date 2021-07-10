@@ -7,7 +7,7 @@
         "humidity": "Humidity",
         "button": {
             "buttonLabelText": "Github",
-            "buttonRedirectUrl": "https://github.com/FugiMuffi/esp-temp-discord"
+            "buttonRedirectUrl": "https://github.com/FugiMuffi/RoomWeather"
         }
     }
 }
