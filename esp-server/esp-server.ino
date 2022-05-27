@@ -111,6 +111,21 @@ void setup(void) {
     server.send(200, "application/json", json);
   });
 
+  server.on("/metrics", []() {
+    float t = dht.readTemperature();
+    float h = dht.readHumidity();
+
+    String message =
+      "# HELP weather_temperature Temperature\n"
+      "# TYPE weather_temperature gauge\n"
+      "weather_temperature " + String(t) + "\n"
+      "# HELP weather_humidity Humidity\n"
+      "# TYPE weather_humidity gauge\n"
+      "weather_humidity " + String(h) + "\n";
+
+    server.send(200, "text/plain", message);
+  });
+
   server.onNotFound(handleNotFound);
 
   server.begin();

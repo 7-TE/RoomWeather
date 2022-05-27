@@ -9,10 +9,11 @@ Install the libraries 'Adafruit Unified Sensor' and 'DHT sensor library'.
 
 Before flashing you need to set the SSID and Password of your WiFi in `arduino_secrets.h` (as in the example file) and adjust the static IP settings at the top of `esp-server.ino` for your network.
 
-There are currently three API endpoints:
+There are currently four API endpoints:
  - `/weather`: returns temperature and humidity as application/json
  - `/temperature`: returns raw temperature reading in celsius as text/plain
  - `/humidity`: returns raw humidity reading in percent as text/plain
+ - `/metrics`: prometheus metrics
 
 ## Discord RPC
 
